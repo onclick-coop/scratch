@@ -19,6 +19,7 @@ The repo is public, and you're welcome to use them.
 | [sudo](sudo/) | Runs a command through sudo with a password prompt that needs no terminal |
 | [test-report](test-report/) | Runs a Deno test suite one file at a time and writes each failure's full output to a markdown report |
 | [tmux](tmux/) | Reads the panes of a tmux session and drives windows of its own there, refusing to write to anyone else's |
+| [todo](todo/) | Keeps a markdown checklist of todos in sections, adding, checking, editing, and removing items by index |
 | [trpc](trpc/) | Calls a procedure on any tRPC server and prints its result as JSON |
 
 ## Usage

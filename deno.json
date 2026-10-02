@@ -10,6 +10,7 @@
     "./sudo",
     "./test-report",
     "./tmux",
+    "./todo",
     "./trpc"
   ],
   "tasks": {
@@ -25,6 +26,7 @@
     "sudo": "deno run --allow-write --allow-env=SUDO_ASKPASS,INIT_CWD --allow-run=sudo sudo/main.ts",
     "test-report": "deno run --allow-read --allow-write --allow-env=INIT_CWD --allow-run=deno test-report/main.ts",
     "tmux": "deno run --allow-read --allow-env=INIT_CWD --allow-run=tmux tmux/main.ts",
+    "todo": "deno run --allow-read --allow-write --allow-env=INIT_CWD todo/main.ts",
     "trpc": "deno run --allow-read --allow-write=\"$HOME/.trpc\" --allow-env=HOME,INIT_CWD --allow-net trpc/main.ts"
   },
   "fmt": {
