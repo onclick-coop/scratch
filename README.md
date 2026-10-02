@@ -10,6 +10,7 @@ The repo is public, and you're welcome to use them.
 | Tool | What it does |
 | --- | --- |
 | [color-scale](color-scale/) | Measures a Tailwind color scale in OKLCH and extrapolates new stops on its curve |
+| [procs](procs/) | Prints a gprocs proc's recent log and restarts, starts, stops, or kills it by name |
 | [shiki-zed-parity](shiki-zed-parity/) | Keeps a Shiki theme matched to Zed's One Dark, character by character |
 | [tmux](tmux/) | Reads the panes of a tmux session and drives windows of its own there, refusing to write to anyone else's |
 
@@ -21,6 +22,13 @@ Clone the repo and run a tool by name from its root:
 deno task <name>
 ```
 
+To run a tool on another project, call it from that project's root:
+
+```sh
+deno task --config <path to scratch>/deno.json <name>
+```
+
+A tool reads relative paths and the project's `tools.config.json` from the directory it is called from.
 A tool's own README lists anything else it needs.
 
 ## Structure
