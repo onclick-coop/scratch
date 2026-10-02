@@ -26,6 +26,7 @@ A tool's own README lists anything else it needs.
 ```
 deno.json              workspace members, and each tool's task and permissions
 deno.lock              one lockfile shared by every tool
+tools.config.json      this repo's settings for each tool, keyed by tool name
 utils/                 helpers shared across tools
 <name>/
   deno.json            the tool's own dependencies
