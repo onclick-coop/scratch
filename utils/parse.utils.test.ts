@@ -155,7 +155,12 @@ describe('All Parse Utils Tests', () => {
 
     it('refuses an unrecognized flag, which the parser would otherwise absorb into the fallback command', () => {
       // Act & Assert
-      assertThrows(() => toInvocation({ positionals: [], commands, withArgument, fallback: 'read', unknownFlags: ['kill'] }), CliError)
+      assertThrows(() => toInvocation({ positionals: [], commands, withArgument, fallback: 'read', unknownFlags: ['kill'] }), CliError, 'Unknown option: "--kill"')
+    })
+
+    it('names an unrecognized one-letter flag with a single dash, as it was typed', () => {
+      // Act & Assert
+      assertThrows(() => toInvocation({ positionals: [], commands, withArgument, fallback: 'read', unknownFlags: ['x'] }), CliError, 'Unknown option: "-x"')
     })
 
     it('refuses an unknown command before anything acts on it', () => {

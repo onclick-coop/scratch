@@ -63,7 +63,8 @@ export const toInvocation = (input: InvocationInput): Invocation => {
   const { positionals, commands, withArgument, fallback, unknownFlags } = input
 
   const [unknown] = unknownFlags
-  if (unknown) throw new CliError(`Unknown option: "--${unknown}"`, [`Commands are words, not flags: ${commands.join(', ')}`, 'Run with --help for usage'])
+  const dashes = unknown?.length === 1 ? '-' : '--'
+  if (unknown) throw new CliError(`Unknown option: "${dashes}${unknown}"`, [`Commands are words, not flags: ${commands.join(', ')}`, 'Run with --help for usage'])
 
   const [command = fallback, argument, ...rest] = positionals
   if (rest.length) throw new CliError(`Unexpected argument: "${rest[0]}"`, ['Pass one argument after the command', 'Quote a value containing spaces'])
