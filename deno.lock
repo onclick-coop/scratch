@@ -13,6 +13,7 @@
     "npm:@tree-sitter-grammars/tree-sitter-yaml@0.7.1": "0.7.1",
     "npm:@trpc/client@^11.19.0": "11.19.0_@trpc+server@11.19.0_typescript@7.0.2",
     "npm:@trpc/server@^11.19.0": "11.19.0_typescript@7.0.2",
+    "npm:playwright@1.59.1": "1.59.1",
     "npm:shiki@4.4.3": "4.4.3",
     "npm:superjson@^2.2.6": "2.2.6",
     "npm:tree-sitter-bash@0.25.1": "0.25.1",
@@ -283,6 +284,11 @@
         "dequal"
       ]
     },
+    "fsevents@2.3.2": {
+      "integrity": "sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==",
+      "os": ["darwin"],
+      "scripts": true
+    },
     "hast-util-to-html@9.0.5": {
       "integrity": "sha512-OguPdidb+fbHQSU4Q4ZiLKnzWo8Wwsf5bZfbvu7//a9oTYoqD/fWpe96NuHkoS9h0ccGOTe0C4NGXdtS0iObOw==",
       "dependencies": [
@@ -363,6 +369,20 @@
         "regex",
         "regex-recursion"
       ]
+    },
+    "playwright-core@1.59.1": {
+      "integrity": "sha512-HBV/RJg81z5BiiZ9yPzIiClYV/QMsDCKUyogwH9p3MCP6IYjUFu/MActgYAvK0oWyV9NlwM3GLBjADyWgydVyg==",
+      "bin": true
+    },
+    "playwright@1.59.1": {
+      "integrity": "sha512-C8oWjPR3F81yljW9o5OxcWzfh6avkVwDD2VYdwIGqTkl+OGFISgypqzfu7dOe4QNLL2aqcWBmI3PMtLIK233lw==",
+      "dependencies": [
+        "playwright-core"
+      ],
+      "optionalDependencies": [
+        "fsevents"
+      ],
+      "bin": true
     },
     "property-information@7.2.0": {
       "integrity": "sha512-IAtzIB6sUiWaJYrX9smp3V46pBGbBeLFRGdh25kg1334VcBlD8HzhPeNIWQH9zhGmo2itIe25EHt9dQP7G5hmg=="
@@ -566,6 +586,14 @@
           "jsr:@std/cli@^1.0.32",
           "jsr:@std/path@^1.1.6",
           "jsr:@std/streams@^1.2.0",
+          "npm:zod@^4.6.5"
+        ]
+      },
+      "playwright-debug": {
+        "dependencies": [
+          "jsr:@std/cli@^1.0.32",
+          "jsr:@std/path@^1.1.6",
+          "npm:playwright@1.59.1",
           "npm:zod@^4.6.5"
         ]
       },

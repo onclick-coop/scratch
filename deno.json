@@ -2,6 +2,7 @@
   "workspace": [
     "./color-scale",
     "./log",
+    "./playwright-debug",
     "./procs",
     "./shiki-zed-parity",
     "./sudo",
@@ -13,6 +14,7 @@
     "install-hooks": "(test -d ../tools/validate-commit/hooks || (echo 'install-hooks needs onclick-coop/tools cloned at ../tools' >&2 && exit 1)) && git config core.hooksPath \"$(realpath ../tools/validate-commit/hooks)\"",
     "color-scale": "deno run --allow-read --allow-env=INIT_CWD color-scale/main.ts",
     "log": "deno run --allow-read --allow-env=INIT_CWD --allow-run=tail log/main.ts",
+    "playwright-debug": "deno run --allow-read --allow-write --allow-env --allow-sys=osRelease,homedir,uid --allow-net=localhost,127.0.0.1,[::1] --allow-run playwright-debug/main.ts",
     "procs": "deno run --allow-read --allow-env=INIT_CWD --allow-run=gprocs procs/main.ts",
     "shiki-zed-parity": "deno run --allow-read --allow-env=VSCODE_TEXTMATE_DEBUG shiki-zed-parity/main.ts",
     "sudo": "deno run --allow-write --allow-env=SUDO_ASKPASS,INIT_CWD --allow-run=sudo sudo/main.ts",

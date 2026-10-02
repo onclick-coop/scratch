@@ -11,6 +11,7 @@ The repo is public, and you're welcome to use them.
 | --- | --- |
 | [color-scale](color-scale/) | Measures a Tailwind color scale in OKLCH and extrapolates new stops on its curve |
 | [log](log/) | Tails a log file, filtering its logtape lines by level and category |
+| [playwright-debug](playwright-debug/) | Keeps a headed Playwright chromium open and runs driver scripts against it over CDP |
 | [procs](procs/) | Prints a gprocs proc's recent log and restarts, starts, stops, or kills it by name |
 | [shiki-zed-parity](shiki-zed-parity/) | Keeps a Shiki theme matched to Zed's One Dark, character by character |
 | [sudo](sudo/) | Runs a command through sudo with a password prompt that needs no terminal |
