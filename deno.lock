@@ -381,7 +381,9 @@
   "workspace": {
     "dependencies": [
       "jsr:@std/assert@^1.0.19",
-      "npm:shiki@4.4.3"
+      "jsr:@std/path@^1.1.6",
+      "npm:shiki@4.4.3",
+      "npm:zod@^4.6.5"
     ],
     "members": {
       "color-scale": {
