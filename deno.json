@@ -1,0 +1,16 @@
+{
+  "workspace": [],
+  "tasks": {
+    "test": "deno test --allow-read"
+  },
+  "fmt": {
+    "lineWidth": 240,
+    "semiColons": false,
+    "singleQuote": true,
+    "exclude": [
+      ".zed/",
+      "*.md",
+      "**/*.md"
+    ]
+  }
+}
