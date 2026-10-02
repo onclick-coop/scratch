@@ -11,6 +11,7 @@ The repo is public, and you're welcome to use them.
 | --- | --- |
 | [color-scale](color-scale/) | Measures a Tailwind color scale in OKLCH and extrapolates new stops on its curve |
 | [shiki-zed-parity](shiki-zed-parity/) | Keeps a Shiki theme matched to Zed's One Dark, character by character |
+| [tmux](tmux/) | Reads the panes of a tmux session and drives windows of its own there, refusing to write to anyone else's |
 
 ## Usage
 

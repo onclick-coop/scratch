@@ -2,7 +2,7 @@
   "validate-commit": {
     "types": ["feat", "fix", "build", "chore", "ci", "docs", "style", "refactor", "perf", "test", "revert"],
     "scopes": {
-      "tools": ["color-scale", "shiki-zed-parity"],
+      "tools": ["color-scale", "procs", "shiki-zed-parity", "sudo", "tmux"],
       "shared": ["utils"],
       "repo": ["config", "deps"]
     },

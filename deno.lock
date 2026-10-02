@@ -406,6 +406,12 @@
           "npm:web-tree-sitter@0.25.10",
           "npm:zod@^4.6.5"
         ]
+      },
+      "tmux": {
+        "dependencies": [
+          "jsr:@std/cli@^1.0.32",
+          "npm:zod@^4.6.5"
+        ]
       }
     }
   }
