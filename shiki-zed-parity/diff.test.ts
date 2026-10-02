@@ -35,6 +35,14 @@ describe('All Zed Parity Diff Tests', () => {
         { content: ':', offset: 5, color: '#d07277', scopes: ['punctuation.separator.key-value.mapping.yaml'] },
       ])
     })
+
+    it('keeps a token Shiki gave no explanation as one piece with no scopes', () => {
+      // Act
+      const pieces = toPieces([[{ content: 'ab', offset: 2, color: '#ACB2BE' }]])
+
+      // Assert
+      assertEquals(pieces, [{ content: 'ab', offset: 2, color: '#acb2be', scopes: [] }])
+    })
   })
 
   describe('diffColors', () => {

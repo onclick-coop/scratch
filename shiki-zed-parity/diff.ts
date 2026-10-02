@@ -54,7 +54,7 @@ export const toPieces = (lines: readonly (readonly ShikiToken[])[]): Piece[] => 
   return pieces
 }
 
-// Lists each piece whose visible characters Zed colors differently, once per distinct Zed color and scope stack.
+// Lists each piece whose visible characters Zed colors differently, once per Zed color and scope stack.
 // Each names the theme selector that won the piece, which is the rule a fix or a gap comment belongs beside.
 export const diffColors = (input: DiffInput): Mismatch[] => {
   const { language, code, pieces, winners, zed } = input

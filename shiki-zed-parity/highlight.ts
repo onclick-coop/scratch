@@ -82,7 +82,6 @@ export const createColorers = async (theme: ShikiTheme): Promise<Colorers> => {
     }
 
     const captures = query.captures(tree.rootNode).map((capture) => ({ name: capture.name, start: capture.node.startIndex, end: capture.node.endIndex }))
-
     return colorCharacters({ length: code.length, captures, theme: syntax })
   }
 

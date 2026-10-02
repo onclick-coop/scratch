@@ -21,11 +21,14 @@ The tool never runs git, so which Zed it compares against is whatever the checko
 Most queries come from `crates/grammars/src`, HTML's come from `extensions/html/languages/html`, and the palette comes from `assets/themes/one/one.json`.
 
 The theme defaults to `one-dark.theme.ts`, and `--theme` points at any module that exports its Shiki theme as `zedOneDark`.
-The theme's comments link one.json and `crates/grammars/src` at the Zed commits it was matched against, and those links are its pins.
+The theme's comments link one.json and `crates/grammars/src` at the Zed commit it was matched against, and that commit is its pin.
+Both links name the same commit, since `update` reads the pinned palette and queries from one checkout and refuses a theme whose links disagree.
+A rule that sets only a style, such as italic, colors nothing, so `compare` and `redundant` leave it out of the selectors they name.
 
-The `update` command compares two checkouts: `--pinned` at the commits the theme links, and `--zed` at a newer one.
-It prints the pins so the `--pinned` checkout can be checked against them.
+The `update` command compares two checkouts: `--pinned` at the commit the theme links, and `--zed` at a newer one.
+It reads every file it needs before printing anything, then prints the pin so the `--pinned` checkout can be checked against it.
 It reports the palette colors that differ from the current One Dark, the queries that changed between the checkouts, and the mismatches the current checkout adds or resolves.
+A palette line it cannot read stops the run, rather than leaving that color out of the report.
 
 The `redundant` command removes each selector in the theme alone and recolors every sample with Shiki, markdown included.
 It lists each selector whose removal changed no character, with the selectors that take over what it used to win.
@@ -53,7 +56,7 @@ Any selector that fixes one breaks the other, so these stay in the list and the 
 
 **A query refused as not compiling.** The grammars come from npm packages pinned in `shiki-zed-parity/deno.json`, while Zed builds against the versions in its root `Cargo.toml`, some of them forks at a git revision.
 A query naming a node the npm grammar lacks cannot compile, and the tool refuses it rather than dropping the pattern.
-Raise the package with `deno add` toward the version Zed pins.
+Raise the package with `deno add` run inside `shiki-zed-parity/` toward the version Zed pins, since `deno add` from the repo root writes to the root `deno.json`.
 
 **A construct the two grammars parse differently.** The TypeScript and YAML grammars Zed builds are forks, so a rare construct can parse differently from the npm release and show a mismatch Zed itself would not have.
 Check the capture against the query before adding a scope for it.
@@ -74,4 +77,4 @@ Clone `zed-industries/zed` anywhere and pass that path.
 A blobless clone, made with `git clone --filter=blob:none`, keeps the history a pinned checkout needs at a fraction of the size.
 
 **An `update` that reports nothing changed when something did.** The tool cannot tell which commit a directory holds, so a `--pinned` checkout at the wrong commit compares the wrong sources without complaint.
-Check it out at the commit the theme's `crates/grammars/src` link names, which the first table prints.
+Check it out at the commit the theme links, which the first table prints.

@@ -23,7 +23,7 @@ describe('All Zed Parity Zed Tests', () => {
       const family: ThemeFamilyOutput = {
         themes: [
           { name: 'One Light', style: { 'editor.foreground': '#242529ff', syntax: { keyword: { color: '#a449abff' } } } },
-          { name: 'One Dark', style: { 'editor.foreground': '#acb2beff', syntax: { keyword: { color: '#b477cfff' }, hint: { color: null } } } },
+          { name: 'One Dark', style: { 'editor.foreground': '#acb2beff', syntax: { keyword: { color: '#b477cfff' }, hint: { color: null }, emphasis: {} } } },
         ],
       }
 
@@ -31,7 +31,22 @@ describe('All Zed Parity Zed Tests', () => {
       const syntax = toSyntaxTheme(family)
 
       // Assert
-      assertEquals(syntax, { foreground: '#acb2be', colors: { keyword: '#b477cf', hint: '#acb2be' } })
+      assertEquals(syntax, { foreground: '#acb2be', colors: { keyword: '#b477cf', hint: '#acb2be', emphasis: '#acb2be' } })
+    })
+
+    it('reads One Dark when another theme in the file has a shape it cannot read', () => {
+      // Arrange
+      const family: ThemeFamilyOutput = {
+        themes: [{ name: 'One Light', style: { renamed: true } }, { name: 'One Dark', style: { 'editor.foreground': '#acb2beff', syntax: {} } }],
+      }
+
+      // Act & Assert
+      assertEquals(toSyntaxTheme(family), { foreground: '#acb2be', colors: {} })
+    })
+
+    it("refuses One Dark's style when it has a shape the tool cannot read", () => {
+      // Act & Assert
+      assertThrows(() => toSyntaxTheme({ themes: [{ name: 'One Dark', style: { syntax: {} } }] }), CliError, 'styles One Dark in a shape the tool cannot read')
     })
 
     it('refuses a file without One Dark rather than reading another theme', () => {

@@ -1,13 +1,13 @@
 import type { ThemeRegistration } from 'shiki/core'
 
 // Shiki Zed parity, from the onclick-coop/scratch repo:
-// - `deno task shiki-zed-parity` diffs this theme per character against a Zed clone's highlights.scm.
-// - `deno task shiki-zed-parity update` lists what changed in the clone since the commits linked below.
+// - `deno task shiki-zed-parity --zed <checkout>` diffs this theme per character against Zed's highlights.scm.
+// - `deno task shiki-zed-parity update --zed <checkout> --pinned <checkout>` lists what changed since the commit below.
 
 export const CODE_THEME = 'zed-one-dark'
 
 // Syntax colors from Zed's One Dark theme, keyed by the tree-sitter capture each one styles.
-// https://github.com/zed-industries/zed/blob/a3f6ef252b6de19d22a1223952fc335253163642/assets/themes/one/one.json
+// https://github.com/zed-industries/zed/blob/250b6581b5b346855cccfb909839d47711cf910b/assets/themes/one/one.json
 const palette = Object.freeze({
   attribute: '#74ade8',
   boolean: '#bf956a',

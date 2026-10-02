@@ -1,5 +1,6 @@
+import { z } from 'zod'
 import { CliError } from '../utils/error.utils.ts'
-import type { ThemeFamilyOutput } from './schema.ts'
+import { type ThemeFamilyOutput, themeStyleOutput } from './schema.ts'
 
 const THEME_NAME = 'One Dark'
 
@@ -29,13 +30,17 @@ export type CharacterColor = {
 export const normalizeColor = (color: string): string => color.toLowerCase().slice(0, 7)
 
 // Reads One Dark out of one.json, where a key carrying no color renders in the editor foreground.
+// Only One Dark's style is checked, so a shape change in another theme in the file breaks nothing.
 export const toSyntaxTheme = (family: ThemeFamilyOutput): SyntaxTheme => {
   const [theme] = family.themes.filter((entry) => entry.name === THEME_NAME)
   if (!theme) throw new CliError(`one.json holds no theme named ${THEME_NAME}`, ['Check out a Zed commit whose one.json still carries it'])
 
-  const foreground = normalizeColor(theme.style['editor.foreground'])
+  const style = themeStyleOutput.safeParse(theme.style)
+  if (!style.success) throw new CliError(`one.json styles ${THEME_NAME} in a shape the tool cannot read: ${z.prettifyError(style.error)}`)
+
+  const foreground = normalizeColor(style.data['editor.foreground'])
   const colors: Record<string, string> = {}
-  for (const [key, style] of Object.entries(theme.style.syntax)) colors[key] = style.color ? normalizeColor(style.color) : foreground
+  for (const [key, entry] of Object.entries(style.data.syntax)) colors[key] = entry.color ? normalizeColor(entry.color) : foreground
 
   return { foreground, colors }
 }

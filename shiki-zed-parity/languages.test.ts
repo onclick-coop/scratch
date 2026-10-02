@@ -26,9 +26,20 @@ describe('All Zed Parity Languages Tests', () => {
       assertThrows(() => selectLanguages('markdown'), CliError, 'Cannot compare markdown: no wasm build')
     })
 
+    it('refuses sql and vue, which Zed ships no queries for', () => {
+      // Act & Assert
+      assertThrows(() => selectLanguages('sql'), CliError, 'Cannot compare sql: Zed ships no built-in SQL queries')
+      assertThrows(() => selectLanguages('vue'), CliError, 'Cannot compare vue: Zed ships no built-in Vue queries')
+    })
+
     it('refuses a language the theme does not color', () => {
       // Act & Assert
       assertThrows(() => selectLanguages('rust'), CliError, 'Unknown language: "rust"')
+    })
+
+    it('refuses an empty language rather than reading it as none and comparing all', () => {
+      // Act & Assert
+      assertThrows(() => selectLanguages(''), CliError, 'Unknown language: ""')
     })
   })
 

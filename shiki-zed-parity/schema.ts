@@ -4,19 +4,24 @@ import { z } from 'zod'
 export const themeFamilyOutput = z.object({
   themes: z.array(z.object({
     name: z.string(),
-    style: z.object({
-      'editor.foreground': z.string(),
-      syntax: z.record(
-        z.string(),
-        z.object({
-          color: z.string().nullish(),
-        }),
-      ),
-    }),
+    style: z.unknown(),
   })),
 })
 
 export type ThemeFamilyOutput = z.infer<typeof themeFamilyOutput>
+
+// https://github.com/zed-industries/zed/blob/main/crates/theme/src/schema.rs
+export const themeStyleOutput = z.object({
+  'editor.foreground': z.string(),
+  syntax: z.record(
+    z.string(),
+    z.object({
+      color: z.string().nullish(),
+    }),
+  ),
+})
+
+export type ThemeStyleOutput = z.infer<typeof themeStyleOutput>
 
 // https://shiki.style/guide/load-theme
 export const themeModuleInput = z.object({

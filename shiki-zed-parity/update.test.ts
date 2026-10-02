@@ -7,13 +7,21 @@ import { captureNames, capturePattern, changeRows, paletteEntryPattern, paletteR
 const themeSource = [
   "import type { ThemeRegistration } from 'shiki/core'",
   '',
+  'const before = Object.freeze({',
+  "  keyword: '#111111',",
+  '})',
+  '',
   'const palette = Object.freeze({',
   "  attribute: '#74ade8',",
   "  'comment.doc': '#878e98',",
   '})',
   '',
-  "const other = Object.freeze({ keyword: '#000000' })",
+  'const after = Object.freeze({',
+  "  string: '#222222',",
+  '})',
 ].join('\n')
+
+const paletteOf = (lines: string[]): string => ['const palette = Object.freeze({', ...lines, '})'].join('\n')
 
 const boolean: Mismatch = {
   language: 'json',
@@ -36,12 +44,33 @@ const embedded: Mismatch = {
 
 describe('All Zed Parity Update Tests', () => {
   describe('parsePalette', () => {
-    it('reads the palette entries and nothing after the block', () => {
+    it('reads the palette entries and nothing before or after the block', () => {
       // Act
       const palette = parsePalette(themeSource)
 
       // Assert
       assertEquals(palette, { attribute: '#74ade8', 'comment.doc': '#878e98' })
+    })
+
+    it('reads an upper-case or 8-digit color as six lower-case digits, the form One Dark compares in', () => {
+      // Act
+      const palette = parsePalette(paletteOf(["  keyword: '#B477CF',", "  string: '#a1c181ff',"]))
+
+      // Assert
+      assertEquals(palette, { keyword: '#b477cf', string: '#a1c181' })
+    })
+
+    it('skips blank and comment lines inside the block', () => {
+      // Act
+      const palette = parsePalette(paletteOf(['', '  // the base colors', "  keyword: '#b477cf',"]))
+
+      // Assert
+      assertEquals(palette, { keyword: '#b477cf' })
+    })
+
+    it('refuses a palette line it cannot read rather than leaving the entry out of the report', () => {
+      // Act & Assert
+      assertThrows(() => parsePalette(paletteOf(["  keyword: '#b477cf',", '  string: shared.green,'])), CliError, 'Cannot read the palette line "string: shared.green,"')
     })
 
     it('refuses a source without the palette block rather than reporting no drift', () => {
@@ -51,15 +80,9 @@ describe('All Zed Parity Update Tests', () => {
   })
 
   describe('pinRows', () => {
-    it('lists the commit the theme links for each source', () => {
-      // Act
-      const rows = pinRows({ theme: 'a3f6ef252b6de19d22a1223952fc335253163642', queries: '250b6581b5b346855cccfb909839d47711cf910b' })
-
-      // Assert
-      assertEquals(rows, [
-        { source: 'assets/themes/one/one.json', commit: 'a3f6ef252b6de19d22a1223952fc335253163642' },
-        { source: 'highlights.scm', commit: '250b6581b5b346855cccfb909839d47711cf910b' },
-      ])
+    it('names the commit both links pin', () => {
+      // Act & Assert
+      assertEquals(pinRows('250b6581b5b346855cccfb909839d47711cf910b'), [{ links: 'one.json, crates/grammars/src', commit: '250b6581b5b346855cccfb909839d47711cf910b' }])
     })
   })
 
@@ -130,6 +153,14 @@ describe('All Zed Parity Update Tests', () => {
       // Assert
       assertEquals(row, { language: 'json', query: 'unchanged', added: '-', removed: '-' })
     })
+
+    it('reports a query whose patterns changed as changed, even when it assigns the same captures', () => {
+      // Act
+      const row = queryRow({ language: 'json', pinned: '(null) @constant.builtin', current: '[(null) (true)] @constant.builtin' })
+
+      // Assert
+      assertEquals(row, { language: 'json', query: 'changed', added: '-', removed: '-' })
+    })
   })
 
   describe('changeRows', () => {
@@ -148,6 +179,14 @@ describe('All Zed Parity Update Tests', () => {
       // Act & Assert
       assertEquals(changeRows([boolean], [boolean]), [])
     })
+
+    it('lists a mismatch whose Zed color changed as both resolved and new', () => {
+      // Act
+      const rows = changeRows([boolean], [{ ...boolean, zed: '#d07277' }])
+
+      // Assert
+      assertEquals(rows.map((row) => [row.change, row.zed]), [['new', '#d07277'], ['resolved', '#bf956a']])
+    })
   })
 
   describe('paletteEntryPattern', () => {
@@ -157,15 +196,26 @@ describe('All Zed Parity Update Tests', () => {
       assertEquals(paletteEntryPattern.exec("  'string.regex': '#bf956a',")?.slice(1), ['string.regex', '#bf956a'])
     })
 
+    it('matches an upper-case and an 8-digit color, which the parser normalizes', () => {
+      // Act & Assert
+      assertEquals(paletteEntryPattern.exec("  primary: '#ACB2BE',")?.slice(1), ['primary', '#ACB2BE'])
+      assertEquals(paletteEntryPattern.exec("  primary: '#acb2beff',")?.slice(1), ['primary', '#acb2beff'])
+    })
+
     it('refuses a deeper line, which belongs to a nested object rather than the palette', () => {
       // Act & Assert
       assert(!paletteEntryPattern.test("    primary: '#acb2be',"))
     })
 
-    it('refuses an upper-case or short color, which the palette never holds', () => {
+    it('refuses a short color or one of seven digits, which is no color the palette holds', () => {
       // Act & Assert
-      assert(!paletteEntryPattern.test("  primary: '#ACB2BE',"))
       assert(!paletteEntryPattern.test("  primary: '#abc',"))
+      assert(!paletteEntryPattern.test("  primary: '#acb2bef',"))
+    })
+
+    it('refuses text after the entry, such as a trailing comment', () => {
+      // Act & Assert
+      assert(!paletteEntryPattern.test("  primary: '#acb2be', // base"))
     })
   })
 
@@ -173,6 +223,11 @@ describe('All Zed Parity Update Tests', () => {
     it('matches a dotted capture name', () => {
       // Act & Assert
       assertEquals([...'@punctuation.special'.matchAll(capturePattern)].map(([, name]) => name), ['punctuation.special'])
+    })
+
+    it('matches a capture starting with an underscore, which a query uses for a capture only its predicates read', () => {
+      // Act & Assert
+      assertEquals([...'@_name'.matchAll(capturePattern)].map(([, name]) => name), ['_name'])
     })
 
     it('refuses an at sign followed by a digit, which is no capture', () => {

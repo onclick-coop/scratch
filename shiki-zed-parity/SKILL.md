@@ -46,20 +46,23 @@ Reason: some Zed captures have no TextMate scope that separates them, such as JS
 Rule: treat code inside an embedded language, such as a regex in TypeScript or a script in HTML, as unchecked by `compare`
 Reason: Zed colors it with a second grammar through `injections.scm`, while the tool parses each sample with one grammar and reports no difference there
 
-Rule: read the theme's one.json permalink and `crates/grammars/src` link as its pins, the Zed commits it was last matched against
-Reason: `update` prints them so its `--pinned` checkout can be matched to them, and every other command ignores them
+Rule: read the theme's one.json permalink and `crates/grammars/src` link as its pin, the one Zed commit it was last matched against
+Reason: `update` prints it so the `--pinned` checkout can be matched to it, and every other command ignores it
 
-Rule: make the pinned checkout with `git -C <clone> worktree add --detach <dir> <sha>`, taking the SHA from the theme's `crates/grammars/src` link, and remove it with `git -C <clone> worktree remove <dir>` afterwards
+Rule: keep both links at the same commit
+Reason: `update` reads the pinned palette and queries from one checkout, so it refuses a theme whose links name two commits
+
+Rule: make the pinned checkout with `git -C <clone> worktree add --detach <dir> <sha>`, taking the SHA from the theme's links, and remove it with `git -C <clone> worktree remove <dir>` afterwards
 Reason: a worktree shares the clone's history, so the pinned and current Zed sit side by side without a second clone
 
 Rule: run `deno task shiki-zed-parity update --zed <clone> --pinned <dir>` to learn what changed in Zed since the pins
-Reason: the command prints the pins, the palette colors that differ, the queries that changed, and the mismatches the current checkout adds or resolves against the pinned one
+Reason: the command prints the pin, the palette colors that differ, the queries that changed, and the mismatches the current checkout adds or resolves against the pinned one
 
-Rule: confirm the pinned checkout holds the commit the first table prints before trusting an empty report
+Rule: confirm the pinned checkout holds the commit the first table prints, as with `git -C <dir> rev-parse HEAD`, before trusting an empty report
 Reason: the tool cannot tell which commit a directory holds, so a checkout at the wrong commit compares the wrong sources without complaint
 
 Rule: expect `update` to edit nothing
-Reason: it is a report the caller acts on, so every change to the theme or the pins stays a reviewable edit
+Reason: it is a report the caller acts on, so every change to the theme or its pin stays a reviewable edit
 
 Rule: update end to end by pulling the clone, adding the pinned worktree, running `update`, changing each palette value it lists in the theme, rerunning `compare` and fixing each mapping it shows until only the gaps the theme's comments name remain, moving both theme links to the clone's commit, and removing the worktree
 Reason: the theme's links, palette, and scopes must all describe the same commit for the next `update` to start clean
@@ -85,8 +88,11 @@ Reason: `support.class` wins nothing until a sample calls `Promise.resolve`, and
 Rule: remove candidates one at a time and rerun between removals
 Reason: each is tested alone, so two same-color selectors that shadow each other, such as `keyword` and `keyword.control`, each pass while removing both recolors code
 
-Rule: raise the grammar package in `shiki-zed-parity/deno.json` with `deno add` when a query is refused as not compiling against the pinned grammar
-Reason: Zed's query named a node the npm grammar lacks, and the version Zed builds against is in the root Cargo.toml of the checkout
+Rule: raise the grammar package by running `deno add` inside `shiki-zed-parity/` when a query is refused as not compiling against the pinned grammar
+Reason: Zed's query named a node the npm grammar lacks, the version Zed builds against is in the root Cargo.toml of the checkout, and `deno add` from the repo root writes to the root deno.json instead of the tool's
+
+Rule: expect `compare` and `redundant` to leave out a rule that sets only a style, such as italic, from the selectors they name
+Reason: such a rule colors nothing, so it can neither win a character's color nor change one when removed
 
 Rule: add a construct to the language's file under `samples/` when a mapping needs coverage, rather than a second sample
 Reason: the samples are the fixed input that makes two runs comparable, so one file per language keeps every finding traceable to a line

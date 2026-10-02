@@ -1,14 +1,33 @@
 import { createColorers, grammarScopes, type ThemeVariant } from '../highlight.ts'
 import { SAMPLES } from '../languages.ts'
-import { type Candidate, candidateRows, countChanged, countWins, fallbacksFor, isEmitted, labelCharacters, listSelectors, removeRule, removeSelector, type TaggedTheme, tagRules, type ThemeRule, wholeRuleRows } from '../redundant.ts'
+import {
+  type Candidate,
+  candidateRows,
+  countChanged,
+  countWins,
+  fallbacksFor,
+  isEmitted,
+  labelCharacters,
+  listSelectors,
+  removeRule,
+  removeSelector,
+  type TaggedTheme,
+  tagRules,
+  type ThemeRule,
+  wholeRuleCandidates,
+  wholeRuleRows,
+} from '../redundant.ts'
 import type { ShikiTheme } from '../schema.ts'
 
-// Removes each selector alone, recolors every sample, and lists the selectors whose removal changed no character.
+// Removes each selector alone, recolors every sample, and lists the selectors whose removal changed nothing.
 export const runRedundant = async (theme: ShikiTheme): Promise<void> => {
   const colorers = await createColorers(theme)
   const base: ThemeVariant = { name: theme.name, fg: theme.fg, rules: theme.settings }
 
-  const samples = await Promise.all(SAMPLES.map(async (language) => ({ language, code: await Deno.readTextFile(new URL(`../samples/${language}.txt`, import.meta.url)) })))
+  const samples = await Promise.all(SAMPLES.map(async (language) => {
+    const code = await Deno.readTextFile(new URL(`../samples/${language}.txt`, import.meta.url))
+    return { language, code }
+  }))
 
   const colorAll = (variant: ThemeVariant): string[][] => samples.map(({ language, code }) => colorers.characters({ variant, language, code }))
   const labelAll = (name: string, tagged: TaggedTheme): string[][] => {
@@ -26,7 +45,6 @@ export const runRedundant = async (theme: ShikiTheme): Promise<void> => {
   const scopes = grammarScopes()
   const selectors = listSelectors(base.rules)
   const candidates: Candidate[] = []
-  const candidateRules = new Set<number>()
 
   for (const [index, selector] of selectors.entries()) {
     const rules = removeSelector(base.rules, selector)
@@ -38,18 +56,16 @@ export const runRedundant = async (theme: ShikiTheme): Promise<void> => {
       return fallbacksFor({ code, winners: baseWinners.at(position) ?? [], fallback: fallbackWinners.at(position) ?? [], label: selector.selector })
     })
 
-    candidates.push({ selector: selector.selector, color: selector.color, wins, fallback: [...new Set(fallback)].sort(), emitted: isEmitted(selector.selector, scopes) })
-    candidateRules.add(selector.rule)
+    candidates.push({
+      selector: selector.selector,
+      color: selector.color,
+      wins,
+      fallback: [...new Set(fallback)].sort(),
+      emitted: isEmitted(selector.selector, scopes),
+    })
   }
 
-  const removableRules: number[] = []
-  for (const rule of candidateRules) {
-    const members = selectors.filter((selector) => selector.rule === rule)
-    const allCandidates = members.every((member) => candidates.some((candidate) => candidate.selector === member.selector))
-    if (members.length < 2 || !allCandidates || changedBy(`without-rule-${rule}`, removeRule(base.rules, rule))) continue
-
-    removableRules.push(rule)
-  }
+  const removableRules = wholeRuleCandidates(selectors, candidates).filter((rule) => !changedBy(`without-rule-${rule}`, removeRule(base.rules, rule)))
 
   console.log('Selectors whose removal alone changes no sample character')
   console.table(candidateRows(candidates))

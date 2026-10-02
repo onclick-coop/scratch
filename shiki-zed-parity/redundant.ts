@@ -65,9 +65,15 @@ const selectorsOf = (rule: ThemeRule): string[] => {
   return [...rule.scope]
 }
 
-// Lists every selector in the theme with the rule it sits in, leaving out the unscoped default rule.
+// Lists every selector that sets a color with the rule it sits in, leaving out the unscoped default rule.
+// A rule setting only a style, such as italic, colors nothing, so it can neither win a character nor lose one.
 export const listSelectors = (rules: readonly ThemeRule[]): Selector[] => {
-  return rules.flatMap((rule, index) => selectorsOf(rule).map((selector) => ({ rule: index, selector, color: normalizeColor(rule.settings.foreground ?? '') })))
+  return rules.flatMap((rule, index) => {
+    const { foreground } = rule.settings
+    if (!foreground) return []
+
+    return selectorsOf(rule).map((selector) => ({ rule: index, selector, color: normalizeColor(foreground) }))
+  })
 }
 
 // Copies the rules without one selector, dropping its rule once the rule has no selector left.
@@ -87,10 +93,9 @@ export const removeSelector = (rules: readonly ThemeRule[], target: Selector): T
   return kept
 }
 
-// Copies the rules without one whole rule.
 export const removeRule = (rules: readonly ThemeRule[], index: number): ThemeRule[] => rules.filter((_, position) => position !== index)
 
-// Gives each selector its own rule and color, so a character's color names the selector that won it.
+// Gives each selector that sets a color its own rule and color, so a character's color names its winner.
 // Order is kept, since TextMate ranks rules by specificity and uses position only to break exact ties.
 export const tagRules = (rules: readonly ThemeRule[]): TaggedTheme => {
   const labels: Record<string, string> = {}
@@ -111,6 +116,7 @@ export const tagRules = (rules: readonly ThemeRule[]): TaggedTheme => {
       continue
     }
 
+    if (!rule.settings.foreground) continue
     for (const selector of selectorsOf(rule)) tagged.push({ scope: [selector], settings: { foreground: sentinel(selector) } })
   }
 
@@ -238,6 +244,16 @@ export const candidateRows = (candidates: readonly Candidate[]): TableRow[] => {
 }
 
 // Names each rule whose removal as a whole changed nothing by its selectors and color.
+// Lists each rule of two or more selectors whose every selector changed nothing when removed alone.
+export const wholeRuleCandidates = (selectors: readonly Selector[], candidates: readonly Candidate[]): number[] => {
+  const rules = [...new Set(selectors.map((selector) => selector.rule))]
+
+  return rules.filter((rule) => {
+    const members = selectors.filter((selector) => selector.rule === rule)
+    return members.length > 1 && members.every((member) => candidates.some((candidate) => candidate.selector === member.selector))
+  })
+}
+
 export const wholeRuleRows = (selectors: readonly Selector[], rules: readonly number[]): TableRow[] => {
   return rules.flatMap((rule) => {
     const members = selectors.filter((selector) => selector.rule === rule)

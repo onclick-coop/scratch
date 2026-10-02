@@ -15,6 +15,7 @@ import {
   type ThemeRule,
   toCharacters,
   whitespacePattern,
+  wholeRuleCandidates,
   wholeRuleRows,
 } from './redundant.ts'
 
@@ -38,6 +39,14 @@ describe('All Zed Parity Redundant Tests', () => {
         { rule: 2, selector: 'punctuation.definition.string', color: '#a1c181' },
       ])
     })
+
+    it('leaves out a rule that sets only a style, since it colors nothing', () => {
+      // Act
+      const selectors = listSelectors([{ scope: ['string.quoted'], settings: {} }, { scope: ['string'], settings: { foreground: '#a1c181' } }])
+
+      // Assert
+      assertEquals(selectors, [{ rule: 1, selector: 'string', color: '#a1c181' }])
+    })
   })
 
   describe('removeSelector', () => {
@@ -47,6 +56,17 @@ describe('All Zed Parity Redundant Tests', () => {
 
       // Assert
       assertEquals(kept.at(1), { scope: ['keyword'], settings: { foreground: '#B477CF' } })
+    })
+
+    it('leaves the same selector in another rule alone', () => {
+      // Arrange
+      const twice: ThemeRule[] = [{ scope: ['string'], settings: { foreground: '#a1c181' } }, { scope: ['string', 'comment'], settings: { foreground: '#5d636f' } }]
+
+      // Act
+      const kept = removeSelector(twice, { rule: 0, selector: 'string', color: '#a1c181' })
+
+      // Assert
+      assertEquals(kept, [{ scope: ['string', 'comment'], settings: { foreground: '#5d636f' } }])
     })
 
     it('drops a rule left with no selector, since an empty scope would read as the default rule', () => {
@@ -96,6 +116,14 @@ describe('All Zed Parity Redundant Tests', () => {
 
       // Assert
       assertEquals(tagged.rules.at(0), { settings: { foreground: '#000002' } })
+    })
+
+    it('leaves out a rule that sets only a style, so the selector that sets the color still wins', () => {
+      // Act
+      const tagged = tagRules([{ settings: { foreground: '#acb2be' } }, { scope: ['string.quoted'], settings: {} }, { scope: ['string'], settings: { foreground: '#a1c181' } }])
+
+      // Assert
+      assertEquals(tagged.labels, { '#000001': 'default', '#000002': 'string' })
     })
   })
 
@@ -172,6 +200,22 @@ describe('All Zed Parity Redundant Tests', () => {
       // Act & Assert
       assertEquals([...collectScopes(grammar)].sort(), ['comment.line.number-sign.shell', 'source.shell'])
     })
+
+    it('collects the name of a rule that holds patterns of its own, which is a scope', () => {
+      // Arrange
+      const grammar = [{ scopeName: 'source.css', patterns: [{ name: 'meta.at-rule.media.css', patterns: [{ name: 'keyword.control.at-rule.css' }] }] }]
+
+      // Act & Assert
+      assertEquals([...collectScopes(grammar)].sort(), ['keyword.control.at-rule.css', 'meta.at-rule.media.css', 'source.css'])
+    })
+
+    it('adds no empty scope for whitespace around a name', () => {
+      // Arrange
+      const grammar = [{ patterns: [{ name: ' meta.embedded ' }] }]
+
+      // Act & Assert
+      assertEquals([...collectScopes(grammar)], ['meta.embedded'])
+    })
   })
 
   describe('isEmitted', () => {
@@ -206,6 +250,33 @@ describe('All Zed Parity Redundant Tests', () => {
         { selector: 'support.class', color: '#6eb4bf', reason: 'wins no sample character', wins: 0, fallback: '-' },
         { selector: 'keyword.control', color: '#b477cf', reason: 'shadowed by a same-color selector', wins: 164, fallback: 'keyword' },
       ])
+    })
+
+    it('names a dead selector that wins nothing as dead rather than silent on the samples', () => {
+      // Act
+      const [row] = candidateRows([{ selector: 'entity.name.class', color: '#6eb4bf', wins: 0, fallback: [], emitted: false }])
+
+      // Assert
+      assertEquals(row, { selector: 'entity.name.class', color: '#6eb4bf', reason: 'emitted by no grammar', wins: 0, fallback: '-' })
+    })
+  })
+
+  describe('wholeRuleCandidates', () => {
+    it('lists a rule of several selectors when every one changed nothing alone', () => {
+      // Arrange
+      const candidates = [
+        { selector: 'string', color: '#a1c181', wins: 0, fallback: [], emitted: true },
+        { selector: 'punctuation.definition.string', color: '#a1c181', wins: 0, fallback: [], emitted: true },
+        { selector: 'keyword', color: '#b477cf', wins: 0, fallback: [], emitted: true },
+      ]
+
+      // Act & Assert
+      assertEquals(wholeRuleCandidates(listSelectors(rules), candidates), [2])
+    })
+
+    it('leaves out a rule of one selector, which the single-selector list already covers', () => {
+      // Act & Assert
+      assertEquals(wholeRuleCandidates(listSelectors([{ scope: ['comment'], settings: { foreground: '#5d636f' } }]), [{ selector: 'comment', color: '#5d636f', wins: 0, fallback: [], emitted: true }]), [])
     })
   })
 

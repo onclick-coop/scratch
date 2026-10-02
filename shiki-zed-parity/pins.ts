@@ -6,13 +6,8 @@ export const themeLinkPattern = /github\.com\/zed-industries\/zed\/blob\/([0-9a-
 // The theme's link to Zed's grammar queries, capturing the commit SHA it pins.
 export const queriesLinkPattern = /github\.com\/zed-industries\/zed\/tree\/([0-9a-f]{40})\/crates\/grammars\/src/
 
-export type Pins = {
-  theme: string
-  queries: string
-}
-
-// Reads the commits the theme's links pin, which update's --pinned checkout should hold.
-export const readPins = (source: string): Pins => {
+// Reads the one commit the theme's links pin, which update's --pinned checkout should hold.
+export const readPin = (source: string): string => {
   const [, theme] = themeLinkPattern.exec(source) ?? []
   const [, queries] = queriesLinkPattern.exec(source) ?? []
 
@@ -20,5 +15,9 @@ export const readPins = (source: string): Pins => {
     throw new CliError('The theme is missing its one.json or crates/grammars/src link', ['Link both at full zed-industries/zed commit SHAs in the theme comments'])
   }
 
-  return { theme, queries }
+  if (theme !== queries) {
+    throw new CliError(`The theme links one.json at ${theme} but its queries at ${queries}`, ['Link both at one commit, since update reads them from one checkout'])
+  }
+
+  return theme
 }

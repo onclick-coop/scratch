@@ -1,11 +1,10 @@
 import type { TableRow } from '../utils/table.utils.ts'
 import { CliError } from '../utils/error.utils.ts'
 import type { Mismatch } from './diff.ts'
-import { THEME_PATH } from './languages.ts'
-import type { Pins } from './pins.ts'
+import { normalizeColor } from './zed.ts'
 
-// One palette entry line, such as `  'comment.doc': '#878e98',`, capturing the key and its color.
-export const paletteEntryPattern = /^ {2}'?([\w.]+)'?: '(#[0-9a-f]{6})',$/
+// One palette entry line, such as `  'comment.doc': '#878e98',`, capturing the key and its 6- or 8-digit color.
+export const paletteEntryPattern = /^ {2}'?([\w.]+)'?: '(#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?)',$/
 
 // A capture name in a query, such as `@punctuation.special`, starting with a letter or underscore.
 export const capturePattern = /@([A-Za-z_][\w.]*)/g
@@ -28,13 +27,8 @@ export type QueryInput = {
   current: string
 }
 
-// Lists the commit the theme links for each source it was matched against.
-export const pinRows = (pins: Pins): TableRow[] => {
-  return [
-    { source: THEME_PATH, commit: pins.theme },
-    { source: 'highlights.scm', commit: pins.queries },
-  ]
-}
+// Names the commit the theme's one.json and crates/grammars/src links pin.
+export const pinRows = (commit: string): TableRow[] => [{ links: 'one.json, crates/grammars/src', commit }]
 
 // Reads the palette object literal out of the theme source, one entry per line.
 export const parsePalette = (source: string): Record<string, string> => {
@@ -43,8 +37,16 @@ export const parsePalette = (source: string): Record<string, string> => {
 
   const palette: Record<string, string> = {}
   for (const line of body.split('\n')) {
+    const text = line.trim()
+    if (!text || text.startsWith('//')) continue
+
+    // A line the pattern refuses is an entry update would otherwise leave out of its report without a word.
     const [, key, color] = paletteEntryPattern.exec(line) ?? []
-    if (key && color) palette[key] = color
+    if (!key || !color) {
+      throw new CliError(`Cannot read the palette line "${text}"`, ["Write each entry as `key: '#rrggbb',` at two spaces of indent"])
+    }
+
+    palette[key] = normalizeColor(color)
   }
 
   if (!Object.keys(palette).length) {
@@ -79,7 +81,7 @@ export const captureNames = (query: string): string[] => {
   return [...new Set(names)].sort()
 }
 
-// Says whether a language's query changed between the pinned and current checkouts, and which captures came or went.
+// Says whether a language's query changed between the checkouts, and which captures came or went.
 export const queryRow = (input: QueryInput): TableRow => {
   const { language, pinned, current } = input
 
@@ -87,7 +89,6 @@ export const queryRow = (input: QueryInput): TableRow => {
   const after = captureNames(current)
   const added = after.filter((name) => !before.includes(name))
   const removed = before.filter((name) => !after.includes(name))
-
   return {
     language,
     query: pinned === current ? 'unchanged' : 'changed',
