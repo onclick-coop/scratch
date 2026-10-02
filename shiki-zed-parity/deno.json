@@ -1,0 +1,14 @@
+{
+  "imports": {
+    "@std/cli": "jsr:@std/cli@^1.0.32",
+    "@std/path": "jsr:@std/path@^1.1.6",
+    "@tree-sitter-grammars/tree-sitter-yaml": "npm:@tree-sitter-grammars/tree-sitter-yaml@0.7.1",
+    "tree-sitter-bash": "npm:tree-sitter-bash@0.25.1",
+    "tree-sitter-css": "npm:tree-sitter-css@0.23.2",
+    "tree-sitter-html": "npm:tree-sitter-html@0.23.2",
+    "tree-sitter-json": "npm:tree-sitter-json@0.24.8",
+    "tree-sitter-typescript": "npm:tree-sitter-typescript@0.23.2",
+    "web-tree-sitter": "npm:web-tree-sitter@0.25.10",
+    "zod": "npm:zod@^4.6.5"
+  }
+}

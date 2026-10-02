@@ -1,7 +1,10 @@
 {
-  "workspace": [],
+  "workspace": [
+    "./shiki-zed-parity"
+  ],
   "tasks": {
-    "test": "deno test --allow-read"
+    "test": "deno test --allow-read",
+    "shiki-zed-parity": "deno run --allow-read --allow-env=VSCODE_TEXTMATE_DEBUG shiki-zed-parity/main.ts"
   },
   "fmt": {
     "lineWidth": 240,
@@ -14,6 +17,7 @@
     ]
   },
   "imports": {
-    "@std/assert": "jsr:@std/assert@^1.0.19"
+    "@std/assert": "jsr:@std/assert@^1.0.19",
+    "shiki": "npm:shiki@4.4.3"
   }
 }

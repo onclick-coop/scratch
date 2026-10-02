@@ -5,6 +5,12 @@ Small command-line tools written in Deno for miscellaneous tasks.
 These tools aren't general enough to belong in [tools](https://github.com/onclick-coop/tools).
 The repo is public, and you're welcome to use them.
 
+## Tools
+
+| Tool | What it does |
+| --- | --- |
+| [shiki-zed-parity](shiki-zed-parity/) | Keeps a Shiki theme matched to Zed's One Dark, character by character |
+
 ## Usage
 
 Clone the repo and run a tool by name from its root:

@@ -1,0 +1,24 @@
+# Deploy runbook
+
+Setext heading
+==============
+
+Some *emphasis*, some **strong text**, and `inline code`.
+See the [Fly docs](https://fly.io/docs "Fly") or <https://onclick.coop>.
+
+- first item
+- second item with ~~strike~~
+1. numbered
+
+> A block quote
+
+```ts
+const x = 1
+```
+
+| a | b |
+|---|---|
+| 1 | 2 |
+
+[ref]: https://example.com
+---

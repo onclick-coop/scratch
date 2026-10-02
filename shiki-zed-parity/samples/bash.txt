@@ -1,0 +1,28 @@
+#!/bin/bash
+set -euo pipefail
+
+RUNNER_IP="${1:-127.0.0.1}"
+export APP_NAME=onclick
+readonly count=3
+
+deploy() {
+  local target="$1"
+  flyctl deploy --app "$APP_NAME" --remote-only -c fly.toml
+  echo "deployed to $target at $(date +%s)" >> /tmp/deploy.log
+}
+
+if [[ -z "$RUNNER_IP" ]]; then
+  echo 'missing ip' >&2
+  exit 1
+fi
+
+for file in *.sh; do
+  shellcheck "$file" || true
+done
+
+result=$(curl -sf "https://example.com/$APP_NAME" | jq -r '.status')
+case "$result" in
+  ok|healthy) deploy production ;;
+  *) echo "unexpected: ${result}" ;;
+esac
+echo $? $HOME ~/work

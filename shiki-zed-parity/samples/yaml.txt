@@ -1,0 +1,25 @@
+# Fly deployment config
+app: onclick-edge
+primary_region: iad
+defaults: &defaults
+  auto_stop: true
+  min_machines: 0
+  memory: 512mb
+  cpu: 1.5
+services:
+  - name: web
+    <<: *defaults
+    ports: [80, 443]
+    limits: { cpu: 2, memory: 1gb }
+    enabled: yes
+    health: null
+    description: "Edge proxy\tfor the platform"
+    note: 'single quoted'
+    script: |
+      echo hello
+      deno task start
+"quoted key": value
+? complex
+: answer
+tagged: !!str 123
+...

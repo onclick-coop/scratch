@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Onclick &amp; Co</title>
+  </head>
+  <body class='page'>
+    <!-- main content -->
+    <a href="https://onclick.coop" target=_blank>Home</a>
+    <input type="checkbox" disabled>
+  </body>
+</html>

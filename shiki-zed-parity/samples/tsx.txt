@@ -1,0 +1,34 @@
+import { defineComponent, ref, type PropType } from 'vue'
+import { Button } from '~/components/Button.tsx'
+
+type Item = { id: number; label: string }
+type Anchor = { el: HTMLElement | null; meta: object | undefined; pinned: true }
+
+class Selection {
+  constructor(readonly ids: number[]) {}
+}
+
+export default defineComponent({
+  props: {
+    items: { type: Array as PropType<Item[]>, required: true },
+  },
+  setup(props, { emit }) {
+    const selected = ref<number | null>(null)
+
+    const handleSelect = (item: Item) => {
+      selected.value = item.id
+      emit('select', item)
+    }
+
+    return () => (
+      <ul class='grid gap-2' data-testid="list">
+        {props.items.map((item) => (
+          <li key={item.id} onClick={() => handleSelect(item)}>
+            <Icons.Check size={16} /> {item.label} &amp; more
+          </li>
+        ))}
+        <Button disabled={!selected.value} variant="primary">Save</Button>
+      </ul>
+    )
+  },
+})

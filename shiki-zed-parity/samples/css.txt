@@ -1,0 +1,29 @@
+@import url('theme.css');
+
+:root {
+  --gap: 0.5rem;
+  --brand: #74ade8;
+}
+
+.card > h2:hover,
+#main .item::before {
+  color: var(--brand);
+  margin: calc(var(--gap) * 2) auto;
+  font-family: 'Inter', sans-serif;
+  transition: opacity 150ms ease-in-out !important;
+  background: rgb(0 0 0 / 50%);
+}
+
+a[href^="https"] { text-decoration: none; }
+
+@media (min-width: 768px) and (prefers-color-scheme: dark) {
+  body { padding: 2px 4em; }
+}
+
+@media not print { .toolbar { display: none; } }
+@media only screen { main { max-width: 64rem; } }
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

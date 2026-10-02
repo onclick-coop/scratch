@@ -1,0 +1,31 @@
+import { readFile } from 'node:fs/promises'
+import type { Config } from './config.ts'
+
+/** Retries a failed fetch before giving up. */
+const MAX_RETRIES = 3
+namespace Limits { export const TIMEOUT = 30 }
+export enum Status { Active = 'active', Archived }
+
+@Injectable()
+export class UserService<T extends object> implements Store {
+  private readonly cache = new Map<string, T>()
+  constructor(private readonly db: Database, public name?: string) {
+    super()
+    this.name = name ?? `user-${db.id}`
+  }
+
+  async fetch({ id, limit = 10 }: Query, [first]: string[]): Promise<T | null> {
+    const pattern = /^\d+$/g
+    if (!pattern.test(id)) throw new Error(`bad id: ${id}\n`)
+    return this.cache.get(id) ?? null
+  }
+}
+
+export const sum = (a: number, b = 2) => a + b
+const double = x => x * 2
+function isUser(value: unknown): value is User { return typeof value === 'object' && value !== undefined }
+type Handler = (event: Event) => void
+const obj = { key: true, nested: { count: 1.5 }, run() { return Status.Active } }
+console.log(obj.nested.count, MAX_RETRIES, window.location.href)
+const ready = Promise.resolve(MAX_RETRIES)
+const timeout = Limits.TIMEOUT
