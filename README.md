@@ -14,6 +14,7 @@ The repo is public, and you're welcome to use them.
 | [shiki-zed-parity](shiki-zed-parity/) | Keeps a Shiki theme matched to Zed's One Dark, character by character |
 | [sudo](sudo/) | Runs a command through sudo with a password prompt that needs no terminal |
 | [tmux](tmux/) | Reads the panes of a tmux session and drives windows of its own there, refusing to write to anyone else's |
+| [trpc](trpc/) | Calls a procedure on any tRPC server and prints its result as JSON |
 
 ## Usage
 

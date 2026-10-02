@@ -1,0 +1,10 @@
+{
+  "imports": {
+    "@std/cli": "jsr:@std/cli@^1.0.32",
+    "@std/path": "jsr:@std/path@^1.1.6",
+    "@trpc/client": "npm:@trpc/client@^11.19.0",
+    "@trpc/server": "npm:@trpc/server@^11.19.0",
+    "superjson": "npm:superjson@^2.2.6",
+    "zod": "npm:zod@^4.6.5"
+  }
+}
