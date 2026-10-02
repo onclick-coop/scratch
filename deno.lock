@@ -384,6 +384,13 @@
       "npm:shiki@4.4.3"
     ],
     "members": {
+      "color-scale": {
+        "dependencies": [
+          "jsr:@std/cli@^1.0.32",
+          "jsr:@std/path@^1.1.6",
+          "npm:zod@^4.6.5"
+        ]
+      },
       "shiki-zed-parity": {
         "dependencies": [
           "jsr:@std/cli@^1.0.32",

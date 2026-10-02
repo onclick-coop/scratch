@@ -9,6 +9,7 @@ The repo is public, and you're welcome to use them.
 
 | Tool | What it does |
 | --- | --- |
+| [color-scale](color-scale/) | Measures a Tailwind color scale in OKLCH and extrapolates new stops on its curve |
 | [shiki-zed-parity](shiki-zed-parity/) | Keeps a Shiki theme matched to Zed's One Dark, character by character |
 
 ## Usage
