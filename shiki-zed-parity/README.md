@@ -12,30 +12,24 @@ It parses the sample with the language's wasm grammar and runs Zed's `highlights
 A capture takes the color of its longest dotted prefix among One Dark's syntax keys, so `@punctuation.delimiter.jsx` reads `punctuation.delimiter`.
 A capture matching no key is skipped, and the capture pushed last and not yet ended wins, which lets an inner node beat its parent.
 It then colors the same sample with Shiki and the theme through `codeToTokens` with `includeExplanation`, and prints every fragment whose color differs.
-Each row names the theme selector that won the fragment, which is the rule a fix or a gap comment belongs beside.
-The tool learns it by recoloring the sample with every selector split into its own rule under a color no other rule carries.
+Each row names the theme selector that won the fragment, which the tool learns by recoloring the sample with every selector split into its own rule under a color no other rule carries.
+A rule that sets only a style, such as italic, colors nothing, so it never wins a fragment and is never named.
 
-Zed's sources come from a checkout of `zed-industries/zed` on disk, read as plain files.
-`--zed` names the checkout, and `compare` and `update` refuse to run without it.
-The tool never runs git, so which Zed it compares against is whatever the checkout holds.
+Zed's sources come from a checkout of `zed-industries/zed` on disk, read as plain files, so the tool never runs git.
 Most queries come from `crates/grammars/src`, HTML's come from `extensions/html/languages/html`, and the palette comes from `assets/themes/one/one.json`.
 
-The theme defaults to `one-dark.theme.ts`, and `--theme` points at any module that exports its Shiki theme as `zedOneDark`.
 The theme's comments link one.json and `crates/grammars/src` at the Zed commit it was matched against, and that commit is its pin.
-Both links name the same commit, since `update` reads the pinned palette and queries from one checkout and refuses a theme whose links disagree.
-A rule that sets only a style, such as italic, colors nothing, so `compare` and `redundant` leave it out of the selectors they name.
+Both links name the same commit, since `update` reads the pinned palette and queries from one checkout.
 
-The `update` command compares two checkouts: `--pinned` at the commit the theme links, and `--zed` at a newer one.
-It reads every file it needs before printing anything, then prints the pin so the `--pinned` checkout can be checked against it.
-It reports the palette colors that differ from the current One Dark, the queries that changed between the checkouts, and the mismatches the current checkout adds or resolves.
+The `update` command compares a checkout at the pin with a newer one.
+It reads every file it needs before printing anything, and reports the palette colors that differ from the current One Dark, the queries that changed between the checkouts, and the mismatches the newer checkout adds or resolves.
 A palette line it cannot read stops the run, rather than leaving that color out of the report.
 
 The `redundant` command removes each selector in the theme alone and recolors every sample with Shiki, markdown included.
 It lists each selector whose removal changed no character, with the selectors that take over what it used to win.
-It sorts them into selectors matching no scope any of the theme's grammars emits, which are dead for any input, and selectors that win nothing or only same-color characters on the samples, which are candidates.
 
-To use the theme in a project, copy `one-dark.theme.ts` over the project's theme file and keep its exports.
-The copy in onclick is `services/platform/client/src/components/data/CodeBlock.theme.ts`.
+The pure logic sits in modules that test without permissions: capture precedence and theme-key lookup in `zed.ts`, the per-character diff in `diff.ts`, the update rows in `update.ts`, the pin reading in `pins.ts`, and the selector list and removal rows in `redundant.ts`.
+`highlight.ts` owns tree-sitter and Shiki, and `sources.ts` owns the file reads and the theme import.
 
 ## Unsupported
 
@@ -56,25 +50,19 @@ Any selector that fixes one breaks the other, so these stay in the list and the 
 
 **A query refused as not compiling.** The grammars come from npm packages pinned in `shiki-zed-parity/deno.json`, while Zed builds against the versions in its root `Cargo.toml`, some of them forks at a git revision.
 A query naming a node the npm grammar lacks cannot compile, and the tool refuses it rather than dropping the pattern.
-Raise the package with `deno add` run inside `shiki-zed-parity/` toward the version Zed pins, since `deno add` from the repo root writes to the root `deno.json`.
+Raising the npm package toward the version Zed pins resolves it.
 
 **A construct the two grammars parse differently.** The TypeScript and YAML grammars Zed builds are forks, so a rare construct can parse differently from the npm release and show a mismatch Zed itself would not have.
-Check the capture against the query before adding a scope for it.
+Checking the capture against the query shows whether Zed would really color it that way.
 
-**A `redundant` candidate that wins no sample character.** Every selector in the theme should win at least one sample character, so that `compare` checks its color and `redundant` can tell whether it is shadowed.
-A selector silent on the samples can still color code they lack, as `support.class` colors `Promise.resolve` only once a sample calls it.
-Add the smallest realistic line that exercises it to the matching sample and rerun, before considering its removal.
-The selector then drops off the list, or moves to shadowed with the selector that takes over named.
+**A `redundant` candidate that wins no sample character.** A selector silent on the samples can still color code they lack, as `support.class` colors `Promise.resolve` only once a sample calls it.
+Until a sample exercises it, the tool cannot tell whether it is needed or shadowed.
 
-**Two candidates removed together.** Each candidate is tested alone, so two same-color selectors that shadow each other, such as `keyword` and `keyword.control`, can each be removable while removing both recolors code.
-Remove one, rerun, and read the list again.
+**Two candidates that are each removable but not both.** Each candidate is tested alone, so two same-color selectors that shadow each other, such as `keyword` and `keyword.control`, each look removable while removing both recolors code.
 
 **Reordering rules expecting a color change.** Shiki's TextMate engine ranks the theme's rules by how specifically each selector matches, and position only breaks a tie between identical selectors.
 Moving a rule up or down changes no color, so a fix is a more specific selector rather than a new position.
 
 **A `--zed` path that is not a Zed checkout.** `compare` and `update` fail naming the file they could not read there.
-Clone `zed-industries/zed` anywhere and pass that path.
-A blobless clone, made with `git clone --filter=blob:none`, keeps the history a pinned checkout needs at a fraction of the size.
 
 **An `update` that reports nothing changed when something did.** The tool cannot tell which commit a directory holds, so a `--pinned` checkout at the wrong commit compares the wrong sources without complaint.
-Check it out at the commit the theme links, which the first table prints.
