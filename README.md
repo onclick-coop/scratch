@@ -14,6 +14,7 @@ The repo is public, and you're welcome to use them.
 | [mutate](mutate/) | Breaks one behavior at a time from a hand-written plan and names the ones a test suite never notices |
 | [playwright-debug](playwright-debug/) | Keeps a headed Playwright chromium open and runs driver scripts against it over CDP |
 | [procs](procs/) | Prints a gprocs proc's recent log and restarts, starts, stops, or kills it by name |
+| [sequence-diagram](sequence-diagram/) | Renders a sequence diagram described as JSON into an ASCII layout for a markdown doc |
 | [shiki-zed-parity](shiki-zed-parity/) | Keeps a Shiki theme matched to Zed's One Dark, character by character |
 | [sudo](sudo/) | Runs a command through sudo with a password prompt that needs no terminal |
 | [test-report](test-report/) | Runs a Deno test suite one file at a time and writes each failure's full output to a markdown report |

@@ -1,0 +1,8 @@
+  Build pipeline                     Postgres DB
+      |                                  |
+      |--- temp IPv4 (deploy only) ----->|
+      |    runner IP appended            |
+      |                                  |
+      |--- config push ----------------->|
+      |    restores app servers only     |
+      |                                  |

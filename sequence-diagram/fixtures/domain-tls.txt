@@ -1,0 +1,13 @@
+  Browser          CDN (edge)                 Edge proxy (region a)            App server (web)
+      |                |                          |                                |
+      |--- HTTPS ----->| (TLS: managed cert)      |                                |
+      |                |                          |                                |
+      |                |<=== outbound tunnel =====|                                |
+      |                |     (tunnel link)        |                                |
+      |                |                          |                                |
+      |                |--- forwards to --------->|                                |
+      |                |    (edge proxy :8000)    |                                |
+      |                |                          |                                |
+      |                |                          |--- app.internal.lan:8080 ----->| web
+      |                |                          |    (with client-ip header)     |
+      |                |                          |                                |

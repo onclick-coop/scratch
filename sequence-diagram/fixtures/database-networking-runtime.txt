@@ -1,0 +1,6 @@
+  CDN (edge)       Web app (us)          Database
+      |                |                     |
+      |--- HTTPS ----->|                     |
+      |                |--- IPv6 :5432 ----->| DB (restricted to app IPv6)
+      |                |--- HTTPS ---------->| APIs (unrestricted)
+      |                |                     |

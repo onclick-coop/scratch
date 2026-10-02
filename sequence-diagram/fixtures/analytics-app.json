@@ -1,0 +1,40 @@
+{
+  "participants": [
+    "Internet",
+    "CDN (edge)",
+    "Edge proxy (region a)",
+    "Analytics app (and its database)"
+  ],
+  "rows": [
+    {
+      "from": "Internet",
+      "to": "CDN (edge)",
+      "label": "HTTPS",
+      "note": "stats.example.test"
+    },
+    {
+      "from": "Edge proxy (region a)",
+      "to": "CDN (edge)",
+      "label": "outbound tunnel",
+      "style": "double",
+      "annotation": "(tunnel link)"
+    },
+    {
+      "from": "CDN (edge)",
+      "to": "Edge proxy (region a)",
+      "label": "forwards to",
+      "annotation": "(edge proxy :8000)"
+    },
+    {
+      "from": "Edge proxy (region a)",
+      "to": "Analytics app (and its database)",
+      "label": "analytics.private.net:3000",
+      "note": "stats"
+    },
+    {
+      "from": "Analytics app (and its database)",
+      "label": "<db>.internal:5432",
+      "target": "Postgres"
+    }
+  ]
+}

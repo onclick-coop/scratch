@@ -1,0 +1,20 @@
+{
+  "participants": [
+    "Build pipeline",
+    "Postgres DB"
+  ],
+  "rows": [
+    {
+      "from": "Build pipeline",
+      "to": "Postgres DB",
+      "label": "temp IPv4 (deploy only)",
+      "annotation": "runner IP appended"
+    },
+    {
+      "from": "Build pipeline",
+      "to": "Postgres DB",
+      "label": "config push",
+      "annotation": "restores app servers only"
+    }
+  ]
+}

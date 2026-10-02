@@ -1,0 +1,13 @@
+  Internet         CDN (edge)                 Edge proxy (region a)                 Analytics app (and its database)
+      |                |                          |                                     |
+      |--- HTTPS ----->| stats.example.test       |                                     |
+      |                |                          |                                     |
+      |                |<=== outbound tunnel =====|                                     |
+      |                |     (tunnel link)        |                                     |
+      |                |                          |                                     |
+      |                |--- forwards to --------->|                                     |
+      |                |    (edge proxy :8000)    |                                     |
+      |                |                          |                                     |
+      |                |                          |--- analytics.private.net:3000 ----->| stats
+      |                |                          |                                     |--- <db>.internal:5432 --> Postgres
+      |                |                          |                                     |

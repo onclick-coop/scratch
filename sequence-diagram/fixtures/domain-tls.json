@@ -1,0 +1,36 @@
+{
+  "participants": [
+    "Browser",
+    "CDN (edge)",
+    "Edge proxy (region a)",
+    "App server (web)"
+  ],
+  "rows": [
+    {
+      "from": "Browser",
+      "to": "CDN (edge)",
+      "label": "HTTPS",
+      "note": "(TLS: managed cert)"
+    },
+    {
+      "from": "Edge proxy (region a)",
+      "to": "CDN (edge)",
+      "label": "outbound tunnel",
+      "style": "double",
+      "annotation": "(tunnel link)"
+    },
+    {
+      "from": "CDN (edge)",
+      "to": "Edge proxy (region a)",
+      "label": "forwards to",
+      "annotation": "(edge proxy :8000)"
+    },
+    {
+      "from": "Edge proxy (region a)",
+      "to": "App server (web)",
+      "label": "app.internal.lan:8080",
+      "note": "web",
+      "annotation": "(with client-ip header)"
+    }
+  ]
+}

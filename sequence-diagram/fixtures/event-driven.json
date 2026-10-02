@@ -1,0 +1,50 @@
+{
+  "participants": [
+    "Producer",
+    "Event bus",
+    "Subscribers"
+  ],
+  "rows": [
+    {
+      "from": "Producer",
+      "to": "Event bus",
+      "label": "emit(value)"
+    },
+    {
+      "at": "Event bus",
+      "text": "schema.parse()",
+      "annotation": "(validates)"
+    },
+    {
+      "from": "Event bus",
+      "to": "Subscribers",
+      "label": "enqueue",
+      "note": "ReadableStream[0]"
+    },
+    {
+      "from": "Event bus",
+      "to": "Subscribers",
+      "label": "enqueue",
+      "note": "ReadableStream[1]"
+    },
+    {
+      "from": "Event bus",
+      "to": "Subscribers",
+      "label": "enqueue",
+      "note": "ReadableStream[N]"
+    },
+    {
+      "from": "Subscribers",
+      "label": "for await",
+      "target": "Consumer"
+    },
+    {
+      "at": "Event bus",
+      "annotation": "invalid? throw"
+    },
+    {
+      "at": "Event bus",
+      "annotation": "(never delivered)"
+    }
+  ]
+}

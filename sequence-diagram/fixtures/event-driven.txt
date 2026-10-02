@@ -1,0 +1,14 @@
+  Producer               Event bus                Subscribers
+      |                      |                        |
+      |--- emit(value) ----->|                        |
+      |                      |-- schema.parse()       |
+      |                      |   (validates)          |
+      |                      |                        |
+      |                      |--- enqueue ----------->| ReadableStream[0]
+      |                      |--- enqueue ----------->| ReadableStream[1]
+      |                      |--- enqueue ----------->| ReadableStream[N]
+      |                      |                        |--- for await --> Consumer
+      |                      |                        |
+      |                      |   invalid? throw       |
+      |                      |   (never delivered)    |
+      |                      |                        |

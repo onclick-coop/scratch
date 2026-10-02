@@ -1,0 +1,52 @@
+{
+  "participants": [
+    "Internet",
+    "CDN (edge)",
+    "Edge proxy (region a)",
+    "Private upstreams (region)"
+  ],
+  "rows": [
+    {
+      "from": "Internet",
+      "to": "CDN (edge)",
+      "label": "HTTPS",
+      "note": "edge: *.example.test"
+    },
+    {
+      "from": "Edge proxy (region a)",
+      "to": "CDN (edge)",
+      "label": "outbound tunnel",
+      "style": "double",
+      "annotation": "(tunnel link :7844)"
+    },
+    {
+      "from": "CDN (edge)",
+      "to": "Edge proxy (region a)",
+      "label": "forwards to",
+      "annotation": "(edge proxy :8000)"
+    },
+    {
+      "from": "Edge proxy (region a)",
+      "to": "Private upstreams (region)",
+      "label": "app.private.net:8080",
+      "note": "web-app"
+    },
+    {
+      "from": "Edge proxy (region a)",
+      "to": "Private upstreams (region)",
+      "label": "docs-site.private.net:8080",
+      "note": "docs frontend"
+    },
+    {
+      "from": "Edge proxy (region a)",
+      "to": "Private upstreams (region)",
+      "label": "analytics.private.net:3000",
+      "note": "analytics app"
+    },
+    {
+      "from": "Edge proxy (region a)",
+      "label": "HTTPS + token",
+      "target": "maintenance-page.edge.example.test"
+    }
+  ]
+}

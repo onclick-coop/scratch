@@ -1,0 +1,15 @@
+  Internet         CDN (edge)                   Edge proxy (region a)                                        Private upstreams (region)
+      |                |                            |                                                            |
+      |--- HTTPS ----->| edge: *.example.test       |                                                            |
+      |                |                            |                                                            |
+      |                |<=== outbound tunnel =======|                                                            |
+      |                |     (tunnel link :7844)    |                                                            |
+      |                |                            |                                                            |
+      |                |--- forwards to ----------->|                                                            |
+      |                |    (edge proxy :8000)      |                                                            |
+      |                |                            |                                                            |
+      |                |                            |--- app.private.net:8080 ---------------------------------->| web-app
+      |                |                            |--- docs-site.private.net:8080 ---------------------------->| docs frontend
+      |                |                            |--- analytics.private.net:3000 ---------------------------->| analytics app
+      |                |                            |--- HTTPS + token --> maintenance-page.edge.example.test    |
+      |                |                            |                                                            |

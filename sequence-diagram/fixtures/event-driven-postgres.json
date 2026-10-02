@@ -1,0 +1,64 @@
+{
+  "participants": [
+    "Postgres",
+    "LISTEN/NOTIFY channel",
+    "Notify handler",
+    "Dispatcher",
+    "Consumer"
+  ],
+  "rows": [
+    {
+      "from": "Postgres",
+      "to": "LISTEN/NOTIFY channel",
+      "label": "change",
+      "annotation": "(trigger)"
+    },
+    {
+      "from": "LISTEN/NOTIFY channel",
+      "to": "Notify handler",
+      "label": "notify"
+    },
+    {
+      "at": "Notify handler",
+      "text": "parse JSON"
+    },
+    {
+      "at": "Notify handler",
+      "text": "validate row"
+    },
+    {
+      "at": "Notify handler",
+      "annotation": "valid?"
+    },
+    {
+      "from": "Notify handler",
+      "to": "Dispatcher",
+      "label": "emit"
+    },
+    {
+      "from": "Dispatcher",
+      "to": "Consumer",
+      "label": "enqueue"
+    },
+    {
+      "at": "Consumer",
+      "text": "for await"
+    },
+    {
+      "at": "Notify handler",
+      "annotation": "invalid?"
+    },
+    {
+      "at": "Notify handler",
+      "text": "log + skip"
+    },
+    {
+      "at": "Notify handler",
+      "annotation": "DELETE?"
+    },
+    {
+      "at": "Notify handler",
+      "text": "skip (no-op)"
+    }
+  ]
+}

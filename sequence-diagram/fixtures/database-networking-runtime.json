@@ -1,0 +1,26 @@
+{
+  "participants": [
+    "CDN (edge)",
+    "Web app (us)",
+    "Database"
+  ],
+  "rows": [
+    {
+      "from": "CDN (edge)",
+      "to": "Web app (us)",
+      "label": "HTTPS"
+    },
+    {
+      "from": "Web app (us)",
+      "to": "Database",
+      "label": "IPv6 :5432",
+      "note": "DB (restricted to app IPv6)"
+    },
+    {
+      "from": "Web app (us)",
+      "to": "Database",
+      "label": "HTTPS",
+      "note": "APIs (unrestricted)"
+    }
+  ]
+}

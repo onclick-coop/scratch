@@ -1,0 +1,17 @@
+  Upstream app (stopped)          Edge proxy (region a)                                                 Browser
+      |                               |                                                                     |
+      |                               |<--- GET app.example.test/settings ----------------------------------|
+      |<--- app.private.net:8080 -----|                                                                     |
+      |     (machine waking)          |                                                                     |
+      |                               |                                                                     |
+      |--- 502 / 503 / 504 ---------->|                                                                     |
+      |                               |--- POST /identity --> Local metadata API                            |
+      |                               |                                                                     |
+      |                               |   machine identity token minted                                     |
+      |                               |--- GET /fallback/ + token --> maintenance-page.edge.example.test    |
+      |                               |                                                                     |
+      |                               |   worker verifies via idp.example jwks                              |
+      |                               |-- waiting page returned                                             |
+      |                               |--- 503 + waiting page --------------------------------------------->|
+      |                               |    Retry-After: 5                                                   |
+      |                               |                                                                     |

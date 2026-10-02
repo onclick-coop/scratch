@@ -1,0 +1,20 @@
+  Postgres          LISTEN/NOTIFY channel    Notify handler      Dispatcher         Consumer
+      |                 |                        |                   |                  |
+      |--- change ----->|                        |                   |                  |
+      |    (trigger)    |                        |                   |                  |
+      |                 |                        |                   |                  |
+      |                 |--- notify ------------>|                   |                  |
+      |                 |                        |-- parse JSON      |                  |
+      |                 |                        |-- validate row    |                  |
+      |                 |                        |                   |                  |
+      |                 |                        |   valid?          |                  |
+      |                 |                        |--- emit --------->|                  |
+      |                 |                        |                   |--- enqueue ----->|
+      |                 |                        |                   |                  |-- for await
+      |                 |                        |                   |                  |
+      |                 |                        |   invalid?        |                  |
+      |                 |                        |-- log + skip      |                  |
+      |                 |                        |                   |                  |
+      |                 |                        |   DELETE?         |                  |
+      |                 |                        |-- skip (no-op)    |                  |
+      |                 |                        |                   |                  |

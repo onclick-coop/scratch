@@ -1,0 +1,53 @@
+{
+  "participants": [
+    "Upstream app (stopped)",
+    "Edge proxy (region a)",
+    "Browser"
+  ],
+  "rows": [
+    {
+      "from": "Browser",
+      "to": "Edge proxy (region a)",
+      "label": "GET app.example.test/settings"
+    },
+    {
+      "from": "Edge proxy (region a)",
+      "to": "Upstream app (stopped)",
+      "label": "app.private.net:8080",
+      "annotation": "(machine waking)"
+    },
+    {
+      "from": "Upstream app (stopped)",
+      "to": "Edge proxy (region a)",
+      "label": "502 / 503 / 504"
+    },
+    {
+      "from": "Edge proxy (region a)",
+      "label": "POST /identity",
+      "target": "Local metadata API"
+    },
+    {
+      "at": "Edge proxy (region a)",
+      "annotation": "machine identity token minted"
+    },
+    {
+      "from": "Edge proxy (region a)",
+      "label": "GET /fallback/ + token",
+      "target": "maintenance-page.edge.example.test"
+    },
+    {
+      "at": "Edge proxy (region a)",
+      "annotation": "worker verifies via idp.example jwks"
+    },
+    {
+      "at": "Edge proxy (region a)",
+      "text": "waiting page returned"
+    },
+    {
+      "from": "Edge proxy (region a)",
+      "to": "Browser",
+      "label": "503 + waiting page",
+      "annotation": "Retry-After: 5"
+    }
+  ]
+}
