@@ -6,14 +6,17 @@ import { CliError } from './error.utils.ts'
 
 describe('All Config Utils Tests', () => {
   describe('callerDirectory', () => {
-    it('falls back to the working directory when the run has no env access to INIT_CWD', () => {
-      // Act & Assert
-      assertEquals(callerDirectory(), Deno.cwd())
+    it('falls back to the working directory where it may not read INIT_CWD', () => {
+      // Act
+      const directory = callerDirectory()
+
+      // Assert
+      assertEquals(directory, Deno.cwd())
     })
   })
 
   describe('readConfigText', () => {
-    it('reads a directory holding no tools.config.json as an empty config, so every tool takes its defaults', async () => {
+    it('reads an absent tools.config.json as an empty config', async () => {
       // Arrange
       const directory = fromFileUrl(new URL('.', import.meta.url))
 
