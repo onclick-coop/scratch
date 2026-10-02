@@ -6,6 +6,7 @@
     "./procs",
     "./shiki-zed-parity",
     "./sudo",
+    "./test-report",
     "./tmux",
     "./trpc"
   ],
@@ -18,6 +19,7 @@
     "procs": "deno run --allow-read --allow-env=INIT_CWD --allow-run=gprocs procs/main.ts",
     "shiki-zed-parity": "deno run --allow-read --allow-env=VSCODE_TEXTMATE_DEBUG shiki-zed-parity/main.ts",
     "sudo": "deno run --allow-write --allow-env=SUDO_ASKPASS,INIT_CWD --allow-run=sudo sudo/main.ts",
+    "test-report": "deno run --allow-read --allow-write --allow-env=INIT_CWD --allow-run=deno test-report/main.ts",
     "tmux": "deno run --allow-read --allow-env=INIT_CWD --allow-run=tmux tmux/main.ts",
     "trpc": "deno run --allow-read --allow-write=\"$HOME/.trpc\" --allow-env=HOME,INIT_CWD --allow-net trpc/main.ts"
   },
