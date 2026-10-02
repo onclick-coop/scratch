@@ -1029,6 +1029,14 @@
           "jsr:@std/path@^1.1.6"
         ]
       },
+      "tagline": {
+        "dependencies": [
+          "jsr:@std/cli@^1.0.32",
+          "jsr:@std/path@^1.1.6",
+          "jsr:@std/streams@^1.2.0",
+          "npm:zod@^4.6.5"
+        ]
+      },
       "test-report": {
         "dependencies": [
           "jsr:@std/cli@^1.0.32",

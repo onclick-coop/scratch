@@ -17,6 +17,7 @@ The repo is public, and you're welcome to use them.
 | [sequence-diagram](sequence-diagram/) | Renders a sequence diagram described as JSON into an ASCII layout for a markdown doc |
 | [shiki-zed-parity](shiki-zed-parity/) | Keeps a Shiki theme matched to Zed's One Dark, character by character |
 | [sudo](sudo/) | Runs a command through sudo with a password prompt that needs no terminal |
+| [tagline](tagline/) | Blocks a gh command whose issue, pull request, or comment body lacks the project's attribution tagline, as a Claude Code hook |
 | [test-report](test-report/) | Runs a Deno test suite one file at a time and writes each failure's full output to a markdown report |
 | [tmux](tmux/) | Reads the panes of a tmux session and drives windows of its own there, refusing to write to anyone else's |
 | [todo](todo/) | Keeps a markdown checklist of todos in sections, adding, checking, editing, and removing items by index |
