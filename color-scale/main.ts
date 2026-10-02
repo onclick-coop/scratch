@@ -2,6 +2,7 @@ import { parseArgs } from '@std/cli/parse-args'
 import { resolve, toFileUrl } from '@std/path'
 import { z } from 'zod'
 import { handleCliError, unwrap } from '../utils/cli.utils.ts'
+import { callerDirectory } from '../utils/config.utils.ts'
 import { CliError } from '../utils/error.utils.ts'
 import { safeAsync } from '../utils/safe.utils.ts'
 import { backtest, backtestRows, extrapolate, extrapolationRows, stableHue } from './scale.ts'
@@ -67,7 +68,7 @@ const run = async (): Promise<void> => {
   if (!args.palette) throw new CliError('Missing --palette <path>', ['Pass the path of a module exporting each scale as { [stop]: [r, g, b] }'])
 
   const targets = parseStops(args.stops)
-  const stops = await loadScale(resolve(args.palette), args.scale)
+  const stops = await loadScale(resolve(callerDirectory(), args.palette), args.scale)
   refuseInsideStops(stops.map((s) => s.stop), targets)
 
   const rows = backtest(stops)

@@ -21,9 +21,6 @@ An end stop is predicted exactly as a new stop past it would be, so its error sh
 **A stop inside the scale's range.**
 The tool extends a scale past its ends, and a quadratic taken from an end says nothing reliable about the space between two existing stops.
 
-**A relative `--palette` path read from the shell's directory.**
-`deno task` runs the tool from the scratch repo root, and reading the shell's directory would take env access the tool otherwise does without.
-
 ## Common issues
 
 **An export missing from the "Available scales" list.**
